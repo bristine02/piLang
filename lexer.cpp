@@ -19,15 +19,31 @@ string token_type_name(TokenType token_type)
     case TOKEN_TYPE_NAME:
         return "name";
     case TOKEN_TYPE_SEMI_COLON:
-        return "semi colon";
+        return "semi-colon";
     case TOKEN_TYPE_DOT:
         return "dot";
     case TOKEN_TYPE_COMMA:
         return "comma";
     case TOKEN_TYPE_OPEN_PAREN:
-        return "open paren";
+        return "open-paren";
     case TOKEN_TYPE_CLOSING_PAREN:
-        return "closing paren";
+        return "closing-paren";
+    case TOKEN_TYPE_LIB:
+        return "lib";
+    case TOKEN_TYPE_LIB_INSTANCE:
+        return "lib-instance";
+    case TOKEN_TYPE_WIRE:
+        return "wire";
+    case TOKEN_TYPE_WIRE_NAME:
+        return "wire-name";
+    case TOKEN_TYPE_MODULE:
+        return "module";
+    case TOKEN_TYPE_MODULE_NAME:
+        return "module-name";
+    case TOKEN_TYPE_ENDMODULE:
+        return "endmodule";
+    case TOKEN_TYPE_PIN_NAME:
+        return "pin-name";
     default:
         return "Currently Unknown";
     }
@@ -48,13 +64,17 @@ Lexer::Lexer(const string& content)
     this->content_len = content.length();
     this->cursor = 0;
     this->line = 0;
+    this->potential_next_token_types = {TOKEN_TYPE_MODULE};
 }
 
 int Lexer::lex_next(Token* token)
 {
+    // TODO: Track code line for error reporting
+
     // Skip white spaces
     while ((this->content[this->cursor] == ' ' || this->content[this->cursor] == '\n') && (this->cursor < this->content_len))
     {
+        if(this->content[this->cursor] == '\n') this->line++;
         this->cursor++;
     }
 
@@ -74,18 +94,23 @@ int Lexer::lex_next(Token* token)
         {
         case ';':
             token->token_type = TOKEN_TYPE_SEMI_COLON;
+            this->potential_next_token_types = {TOKEN_TYPE_WIRE, TOKEN_TYPE_LIB, TOKEN_TYPE_ENDMODULE};
             break;
         case '.':
             token->token_type = TOKEN_TYPE_DOT;
+            this->potential_next_token_types = {TOKEN_TYPE_PIN_NAME};
             break;
         case ',':
             token->token_type = TOKEN_TYPE_COMMA;
+            this->potential_next_token_types = {TOKEN_TYPE_DOT};
             break;
         case '(':
             token->token_type = TOKEN_TYPE_OPEN_PAREN;
+            this->potential_next_token_types = {TOKEN_TYPE_CLOSING_PAREN, TOKEN_TYPE_DOT, TOKEN_TYPE_WIRE_NAME};
             break;
         case ')':
             token->token_type = TOKEN_TYPE_CLOSING_PAREN;
+            this->potential_next_token_types = {TOKEN_TYPE_SEMI_COLON, TOKEN_TYPE_COMMA, TOKEN_TYPE_CLOSING_PAREN};
             break;
         
         default:  // Should never happen
@@ -108,4 +133,115 @@ int Lexer::lex_next(Token* token)
     }
   
   return LEXER_STATE_ERROR;
+}
+
+int Lexer::update_token_type(Token* token, Token* prev_token)
+{
+    string token_str = this->get_token_value(token);
+
+    if (token_str == "module")
+    {
+        token->token_type = TOKEN_TYPE_MODULE;
+        this->potential_next_token_types = {TOKEN_TYPE_MODULE_NAME};
+    }
+    else if(token_str == "endmodule")
+    {
+        token->token_type = TOKEN_TYPE_ENDMODULE;
+        this->potential_next_token_types = {TOKEN_TYPE_NONE};
+    }
+    else if(token_str == "wire")
+    {
+        token->token_type = TOKEN_TYPE_WIRE;
+        this->potential_next_token_types = {TOKEN_TYPE_WIRE_NAME};
+    }
+    else // Predictable token types
+    {
+        // TODO: add support for module inputs and outputs
+
+        // At least one token has been tokenized before this point
+        if (prev_token == nullptr) return LEXER_STATE_ERROR;
+        
+        switch (prev_token->token_type)
+        {
+        case TOKEN_TYPE_MODULE:
+            token->token_type = TOKEN_TYPE_MODULE_NAME;
+            this->potential_next_token_types = {TOKEN_TYPE_OPEN_PAREN};
+            break;
+        case TOKEN_TYPE_WIRE:
+            token->token_type = TOKEN_TYPE_WIRE_NAME;
+            this->potential_next_token_types = {TOKEN_TYPE_SEMI_COLON};
+            break;
+        case TOKEN_TYPE_SEMI_COLON:
+            token->token_type = TOKEN_TYPE_LIB;  // wire taken care of already above
+            this->potential_next_token_types = {TOKEN_TYPE_LIB_INSTANCE};
+            break;
+        case TOKEN_TYPE_LIB:
+            token->token_type = TOKEN_TYPE_LIB_INSTANCE;
+            this->potential_next_token_types = {TOKEN_TYPE_OPEN_PAREN};
+            break;
+        case TOKEN_TYPE_DOT:
+            token->token_type = TOKEN_TYPE_PIN_NAME;
+            this->potential_next_token_types = {TOKEN_TYPE_OPEN_PAREN};
+            break;
+        case TOKEN_TYPE_OPEN_PAREN:
+            token->token_type = TOKEN_TYPE_WIRE_NAME;
+            this->potential_next_token_types = {TOKEN_TYPE_CLOSING_PAREN};
+            break;
+        default:
+            break;
+        }
+    }
+
+    return LEXER_STATE_NO_ERROR;
+}
+
+
+void Lexer::tokenize()
+{
+    int lex_status = LEXER_STATE_NO_ERROR;
+    while (lex_status == LEXER_STATE_NO_ERROR)
+    {
+        Token t;
+        vector<TokenType> expected_token_types = this->potential_next_token_types;
+        lex_status = this->lex_next(&t);
+        if(lex_status == LEXER_STATE_NO_ERROR)
+        {
+            // Make token type more specific is it's a word
+            if (t.token_type == TOKEN_TYPE_NAME) 
+            {
+                Token *prev_token = nullptr;
+                if(this->tokens.size() > 0) prev_token = &(this->tokens.back());
+                int status = this->update_token_type(&t, prev_token);
+                if (status == LEXER_STATE_ERROR)
+                {
+                    cout<< "ERROR: Unexpected token on line " << this->line << ", near \"" << this->get_token_value(&t) << "\"\n";
+                    break;
+                }
+            }
+
+            if (!this->is_expected_token_type(&t, expected_token_types))
+            {
+                cout<< "ERROR: Unexpected token \"" << this->get_token_value(&t) << "\" on line " << this->line << endl;
+                break;
+            }
+            
+            this->tokens.push_back(t);
+        }
+        else if(lex_status == LEXER_STATE_ERROR)
+        {
+            cout<< "ERROR: Unexpected token on line " << this->line <<endl;
+            break;
+        }
+    }   
+}
+
+bool Lexer::is_expected_token_type(Token* token, vector<TokenType> expected_token_types)
+{
+    return find(expected_token_types.begin(), expected_token_types.end(), token->token_type) != expected_token_types.end();
+}
+
+string Lexer::get_token_value(Token* t)
+{
+    string token_value(t->value_ptr, t->value_len);
+    return token_value;
 }

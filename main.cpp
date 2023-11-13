@@ -45,17 +45,9 @@ int main(int argc, char** argv)
 
     // cout<<buffer.str()<<endl;
     Lexer lexer = Lexer(buffer.str());
-    vector<Token> tokens;
+    lexer.tokenize();
     
-    int lex_status = LEXER_STATE_NO_ERROR;
-    while (lex_status == LEXER_STATE_NO_ERROR)
-    {
-        Token t;
-        lex_status = lexer.lex_next(&t);
-        if(lex_status == LEXER_STATE_NO_ERROR) tokens.push_back(t);
-    }
-    
-    for (Token token: tokens)
+    for (Token token: lexer.tokens)
     {
         string token_value(token.value_ptr, token.value_len);
         std::cout << token_type_name(token.token_type) << ": " << token_value <<endl;
