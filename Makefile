@@ -1,16 +1,23 @@
-.PHONY: build clean
-cc = g++
+TARGET := pilang
+CXX := g++
+#LD := $(CXX)
+SDIR:= .
+OPTIONS := -Wall -Wextra
+C_FLAGS:= -c
 
-build: main
+C_SOURCES = $(shell ls *.cpp)
+C_OBJS := $(patsubst %.cpp, ./outputs/%.o, $(C_SOURCES))
+outputs/%.o:%.cpp
+	@echo 'Building file: $(@F)'
+	$(CXX) $(C_FLAGS) $< -o $@
 
-main: main.o lib_symbol.o
-	$(cc) -Wall -Wextra -Werror -o main main.o lib_symbol.o
+build: $(TARGET)
 
-lib_symbol.o: lib_symbol.cpp lib_symbol.hpp
-	$(cc) -Wall -Wextra -Werror -c lib_symbol.cpp
-
-main.o: main.cpp lib_symbol_strings.hpp
-	$(cc) -Wall -Wextra -Werror -c main.cpp
+$(TARGET): $(C_OBJS)
+	@echo 'building binary $(@F)'
+	$(CXX) $(OPTIONS) $(C_OBJS) -o $(@F)
 
 clean:
-	del *.o main.exe
+	rm -f $(TARGET) ./outputs/*.o
+
+.PHONY: $(TARGET)

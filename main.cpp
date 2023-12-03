@@ -47,11 +47,13 @@ int main(int argc, char** argv)
     Lexer lexer = Lexer(buffer.str());
     lexer.tokenize();
     
-    for (Token token: lexer.tokens)
-    {
-        string token_value(token.value_ptr, token.value_len);
-        std::cout << token_type_name(token.token_type) << ": " << token_value <<endl;
-    }
+    // for (Token token: lexer.tokens)
+    // {
+    //     string token_value(token.value_ptr, token.value_len);
+    //     std::cout << token_type_name(token.token_type) << ": " << token_value <<endl;
+    // }
+
+    lexer.groupTokens();
     
 
     return 0;

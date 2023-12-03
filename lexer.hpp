@@ -49,7 +49,8 @@ typedef struct
 
 typedef struct
 {
-    vector<Token>* tokens_ptr; // Pointer to the first token in token group.
+    TokenGroupType tokenGroupType;
+    size_t tokens_start; // Index of first token in token group.
     size_t tokens_length;      // number of tokens in token group
 } TokenGroup;
 
@@ -77,6 +78,7 @@ public:
     Lexer(const string& content);
     void tokenize();
     string get_token_value(Token* t);
+    void groupTokens();
 
     ~Lexer(){};
 };

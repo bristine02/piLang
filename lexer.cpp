@@ -175,7 +175,7 @@ int Lexer::update_token_type(Token* token, Token* prev_token)
             token->token_type = TOKEN_TYPE_LIB;  // wire taken care of already above
             this->potential_next_token_types = {TOKEN_TYPE_LIB_INSTANCE};
             break;
-        case TOKEN_TYPE_LIB:
+        case TOKEN_TYPE_LIB: 
             token->token_type = TOKEN_TYPE_LIB_INSTANCE;
             this->potential_next_token_types = {TOKEN_TYPE_OPEN_PAREN};
             break;
@@ -233,6 +233,51 @@ void Lexer::tokenize()
             break;
         }
     }   
+}
+
+void Lexer::groupTokens()
+{
+    if(this->tokens.size() == 0) return;
+
+    if(this->tokens.at(0).token_type != TokenType::TOKEN_TYPE_MODULE)
+    {
+        cout<< "Circuit definition must start with \"module\""<<endl;
+        return;
+    }
+
+    size_t token_idx = 0;
+    while (token_idx < this->tokens.size())
+    {
+        TokenGroup tGroup;
+        Token token = this->tokens.at(token_idx);
+        cout<< token_type_name(token.token_type)<<endl;
+        if(token.token_type == TokenType::TOKEN_TYPE_MODULE)
+        {
+            tGroup.tokenGroupType = TokenGroupType::TOKEN_GROUP_MODULE_HEADER;
+        } 
+        else if (token.token_type == TokenType::TOKEN_TYPE_ENDMODULE)
+        {
+            tGroup.tokenGroupType = TokenGroupType::TOKEN_GROUP_MODULE_END;
+        } 
+        else
+        {
+            // All other tokens are currently classified as lib instances
+            tGroup.tokenGroupType = TokenGroupType::TOKEN_GROUP_LIB_INSTANCE; 
+        }
+
+        // find end of token group (next ;)
+        size_t idx = token_idx;
+        while ((token_idx < this->tokens.size()) && (this->tokens.at(token_idx).token_type != TOKEN_TYPE_SEMI_COLON))
+        {
+            token_idx++;
+        }
+
+        tGroup.tokens_length = token_idx - idx;
+        tGroup.tokens_start = idx;
+        this->token_groups.push_back(tGroup);
+        token_idx++;
+    }
+    cout<< "Grouping done. Groups: "<<this->token_groups.size()<<endl; 
 }
 
 bool Lexer::is_expected_token_type(Token* token, vector<TokenType> expected_token_types)
