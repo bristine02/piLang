@@ -2,10 +2,10 @@
 
 void LibSymbol::setLibStr(string str)
 {
-    libStr = str;
+    lib_Str = str;
 }
 
 string LibSymbol::getLibStr()
 {
-    return libStr;
+    return lib_Str;
 }

@@ -4,11 +4,13 @@ using namespace std;
 class LibSymbol 
 {
     protected:
-        string libStr;
+        string lib_Str;
     
 
     public:
+        LibSymbol();
+        ~LibSymbol();
         string getLibStr();
-        void setLibStr(string libStr);
+        void setLibStr(string lib_Str);
 
 };
