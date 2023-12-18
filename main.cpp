@@ -1,6 +1,5 @@
-#include "lib_symbol.hpp"
-#include "lib_symbol_strings.hpp"
-#include "lexer.hpp"
+#include "./lib_symbol/lib_symbol.hpp"
+#include "./compiler/lexer.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -22,12 +21,12 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    LibSymbol libSymR;
-    libSymR.setLibStr(LIB_R);
-    LibSymbol libSym3V3;
-    libSymR.setLibStr(LIB_3V3);
-    LibSymbol libSymGND;
-    libSymR.setLibStr(LIB_GND);
+    // LibSymbol libSymR;
+    // libSymR.setLibStr(LIB_R);
+    // LibSymbol libSym3V3;
+    // libSymR.setLibStr(LIB_3V3);
+    // LibSymbol libSymGND;
+    // libSymR.setLibStr(LIB_GND);
 
 
     string filename = argv[1];

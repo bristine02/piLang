@@ -72,7 +72,8 @@ int Lexer::lex_next(Token* token)
     // TODO: Track code line for error reporting
 
     // Skip white spaces
-    while ((this->content[this->cursor] == ' ' || this->content[this->cursor] == '\n') && (this->cursor < this->content_len))
+    while ((this->content[this->cursor] == ' ' || this->content[this->cursor] == '\n' 
+            || this->content[this->cursor] == '\r') && (this->cursor < this->content_len))
     {
         if(this->content[this->cursor] == '\n') this->line++;
         this->cursor++;
@@ -114,6 +115,7 @@ int Lexer::lex_next(Token* token)
             break;
         
         default:  // Should never happen
+            cout<< "Unrecognized token: " << this->content[this->cursor] << endl;
             break;
         }
 
@@ -121,7 +123,7 @@ int Lexer::lex_next(Token* token)
         return LEXER_STATE_NO_ERROR;
     }
 
-    if (is_valid_name_start(this->content[this->cursor]))
+    else if (is_valid_name_start(this->content[this->cursor]))
     {
         token->token_type = TOKEN_TYPE_NAME;
         while (is_valid_name_char(this->content[this->cursor]) && (this->cursor < this->content_len))
@@ -131,6 +133,7 @@ int Lexer::lex_next(Token* token)
         }
         return LEXER_STATE_NO_ERROR;
     }
+    else { cout<< "Unrecognized token: " << this->content[this->cursor] << endl; }
   
   return LEXER_STATE_ERROR;
 }
