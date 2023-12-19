@@ -1,16 +1,41 @@
-.PHONY: build clean
-cc = g++
+TARGET := pilang
+CXX := g++
+OPTIONS := -Wall -Wextra
+C_FLAGS := -c
 
-build: main
+SRC_DIR := .
+SRC_DIRS := $(wildcard $(SRC_DIR) */)
+SOURCES := $(wildcard $(SRC_DIR)*.cpp) $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)*.cpp))
+OBJECTS := $(patsubst %.cpp,outputs/%.o,$(notdir $(SOURCES)))
 
-main: main.o lib_symbol.o
-	$(cc) -Wall -Wextra -Werror -o main main.o lib_symbol.o
+all: outputs $(TARGET)
 
-lib_symbol.o: lib_symbol.cpp lib_symbol.hpp
-	$(cc) -Wall -Wextra -Werror -c lib_symbol.cpp
+main.o: main.cpp
+	@echo 'Building main.o from main.cpp'
+	$(CXX) $(C_FLAGS) main.cpp -o main.o
 
-main.o: main.cpp lib_symbol_strings.hpp
-	$(cc) -Wall -Wextra -Werror -c main.cpp
+define generate_object_rule
+$(1): $(2)
+	@echo 'Building $$@ from $$^'
+	$(CXX) $(C_FLAGS) $$< -o $$@
+endef
+
+$(foreach object, $(OBJECTS), \
+	$(eval \
+		$(call generate_object_rule, $(object), $(filter \
+			%/$(notdir $(patsubst %.o, %.cpp, $(object))), $(SOURCES) \
+			)) \
+	) \
+)
+
+$(TARGET): $(OBJECTS) main.o
+	@echo 'Building binary $@ from $^'
+	$(CXX) $(OPTIONS) $^ -o $@
+
+outputs:
+	mkdir -p outputs
 
 clean:
-	del *.o main.exe
+	rm -f $(TARGET) outputs/*.o
+
+.PHONY: $(TARGET) clean
