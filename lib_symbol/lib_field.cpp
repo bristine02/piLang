@@ -36,8 +36,38 @@ void LibField::parse(string field_str)
     } catch(...) { cout<< "Bad field: "<< field_str << endl; }
     
     //for(const auto frag:fragments) cout << frag << ", "; cout <<endl;
-    
+
     return;
+}
+
+
+string LibField::get_s_expression()
+{
+    string property_name, property_value;
+    float x, y, font_size;
+    int16_t rot = 0; 
+
+    if (this->field_type == "F0"){
+        property_name = "Reference";
+    }else if(this->field_type == "F1"){
+
+        property_name = "Value";
+    }else if(this->field_type == "F2"){
+
+        property_name = "Footprint";
+    }else if(this->field_type == "F3"){
+
+        property_name = "Datasheet";
+    }
+
+    std::ostringstream oss;
+    
+    oss << "(property \"" << property_name << "\" \"" << property_value << "\" (at "
+        << std::fixed << std::setprecision(2) << x << " " << y << " " << rot << ")\n"
+        << "    (effects (font (size " << font_size << " " << font_size << ")))\n"
+        << ")";
+
+    return oss.str();
 }
 
 

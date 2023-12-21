@@ -2,6 +2,8 @@
 #include <string>
 #include <cstdint>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
 #include "../utils/utils.hpp"
 
 // uncomment to disable assert()
@@ -34,6 +36,7 @@ public:
     ~LibField();
 
     void parse(string field_str);
+    string get_s_expression();
     void test();
 
 };
