@@ -1,9 +1,9 @@
 #include "./lib_symbol/lib_symbol.hpp"
 #include "./compiler/lexer.hpp"
+#include "./lib_symbol/lib_field.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <algorithm>
 #include <sstream>
 #include <string>
 
@@ -53,30 +53,10 @@ int main(int argc, char** argv)
     // }
 
     lexer.groupTokens();
+
+    LibField lf;
+    lf.test();
     
 
     return 0;
-}
-
-void removeAllChars(string* str, char c)
-{
-    string::iterator endPos = remove(str->begin(), str->end(), c);
-    str->erase(endPos, str->end());
-}
-
-vector<string> splitString(string* str, string delimiter)
-{
-    size_t startPos = 0;
-    size_t endPos = 0;
-    string subStr;
-    vector<string> result;
-
-    while ((endPos = str->find(delimiter, startPos)) != string::npos)
-    {
-        subStr = str->substr(startPos, endPos);
-        result.push_back(subStr);
-        startPos = endPos;
-    }
-
-    return result; 
 }

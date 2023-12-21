@@ -253,7 +253,7 @@ void Lexer::groupTokens()
     {
         TokenGroup tGroup;
         Token token = this->tokens.at(token_idx);
-        cout<< token_type_name(token.token_type)<<endl;
+        
         if(token.token_type == TokenType::TOKEN_TYPE_MODULE)
         {
             tGroup.tokenGroupType = TokenGroupType::TOKEN_GROUP_MODULE_HEADER;
@@ -280,7 +280,7 @@ void Lexer::groupTokens()
         this->token_groups.push_back(tGroup);
         token_idx++;
     }
-    cout<< "Grouping done. Groups: "<<this->token_groups.size()<<endl; 
+    //cout<< "Grouping done. Groups: "<<this->token_groups.size()<<endl; 
 }
 
 bool Lexer::is_expected_token_type(Token* token, vector<TokenType> expected_token_types)

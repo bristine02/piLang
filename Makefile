@@ -36,6 +36,6 @@ outputs:
 	mkdir -p outputs
 
 clean:
-	rm -f $(TARGET) outputs/*.o
+	rm -f $(TARGET) outputs/*.o main.o
 
 .PHONY: $(TARGET) clean
