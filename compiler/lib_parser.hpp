@@ -4,6 +4,7 @@
 #include "../compiler/token_group.hpp"
 #include <vector>
 #include <optional>
+#include <jsoncpp/json/json.h>
 
 using namespace std;
 

@@ -1,7 +1,9 @@
 TARGET := pilang
 CXX := g++
 OPTIONS := -Wall -Wextra
-C_FLAGS := -c
+#JSONCPP_DIR = /usr/include/jsoncpp/json
+C_FLAGS := -c #-I$(JSONCPP_DIR)
+LD_FLAGS += -ljsoncpp
 
 SRC_DIR := .
 SRC_DIRS := $(wildcard $(SRC_DIR) */)
@@ -12,7 +14,7 @@ all: outputs $(TARGET)
 
 main.o: main.cpp
 	@echo 'Building main.o from main.cpp'
-	$(CXX) $(C_FLAGS) main.cpp -o main.o
+	$(CXX) $(C_FLAGS) main.cpp -o main.o $(LD_FLAGS)
 
 define generate_object_rule
 $(1): $(2)
