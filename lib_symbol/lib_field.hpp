@@ -1,3 +1,6 @@
+/* ***********************************************  
+    Not used for any parts of the symtem
+**************************************************/
 #pragma once
 #include <string>
 #include <cstdint>

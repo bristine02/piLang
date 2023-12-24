@@ -1,0 +1,18 @@
+{
+    "pilang_version" : 0.1,
+    "PILIBS":
+    {  
+        "R": {
+            "kicad_lib_id": "Device:R",
+            "base_uuid": "044526c6-a24b-11ee-8c90-0242ac120002"
+        },
+        "V3V3": {
+            "kicad_lib_id": "power:+3.3V",
+            "base_uuid": "20454b80-a24b-11ee-8c90-0242ac120002"
+        },
+        "GND": {
+            "kicad_lib_id": "power:GND",
+            "base_uuid": "65145efe-a24b-11ee-8c90-0242ac120002"
+        }
+    }
+}
