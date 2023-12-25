@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+using namespace std;
 
 enum TokenType
 {
@@ -29,4 +30,6 @@ typedef struct
     char* value_ptr;  // Pointer to start of this value in the Lexer content.
                         // prevents duplicating strings
     size_t value_len;   // Length of token value
+
+    string get_value(){ return string(value_ptr, value_len); }
 } Token;

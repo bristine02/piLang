@@ -1,6 +1,4 @@
-#include "./lib_symbol/lib_symbol.hpp"
-#include "./compiler/lexer.hpp"
-#include "./lib_symbol/lib_field.hpp"
+#include "./compiler/compiler.hpp"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,9 +6,6 @@
 #include <string>
 
 using namespace std;
-
-vector<string> splitString(string* str, string delimiter);
-void removeAllChars(string* str, char c);
 
 
 int main(int argc, char** argv)
@@ -42,21 +37,8 @@ int main(int argc, char** argv)
     buffer << file.rdbuf();
     file.close();
 
-    // cout<<buffer.str()<<endl;
-    Lexer lexer = Lexer(buffer.str());
-    lexer.tokenize();
+    Compiler compiler;
+    compiler.compile(buffer.str());
     
-    // for (Token token: lexer.tokens)
-    // {
-    //     string token_value(token.value_ptr, token.value_len);
-    //     std::cout << token_type_name(token.token_type) << ": " << token_value <<endl;
-    // }
-
-    lexer.groupTokens();
-
-    LibField lf;
-    lf.test();
-    
-
     return 0;
 }

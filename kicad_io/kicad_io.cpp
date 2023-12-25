@@ -7,3 +7,8 @@ KicadIO::KicadIO(string kicad_lib_dir, string output_dir)
 KicadIO::~KicadIO()
 {
 }
+
+KicadIOState KicadIO::create_symbol(LibInstance lib_instance)
+{
+    return KicadIOState();
+}

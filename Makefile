@@ -3,7 +3,7 @@ CXX := g++
 OPTIONS := -Wall -Wextra
 #JSONCPP_DIR = /usr/include/jsoncpp/json
 C_FLAGS := -c #-I$(JSONCPP_DIR)
-LD_FLAGS += -ljsoncpp
+LD_FLAGS := -ljsoncpp
 
 SRC_DIR := .
 SRC_DIRS := $(wildcard $(SRC_DIR) */)
@@ -14,7 +14,7 @@ all: outputs $(TARGET)
 
 main.o: main.cpp
 	@echo 'Building main.o from main.cpp'
-	$(CXX) $(C_FLAGS) main.cpp -o main.o $(LD_FLAGS)
+	$(CXX) $(C_FLAGS) main.cpp -o main.o
 
 define generate_object_rule
 $(1): $(2)
@@ -32,7 +32,7 @@ $(foreach object, $(OBJECTS), \
 
 $(TARGET): $(OBJECTS) main.o
 	@echo 'Building binary $@ from $^'
-	$(CXX) $(OPTIONS) $^ -o $@
+	$(CXX) $(OPTIONS) $^ -o $@ $(LD_FLAGS)
 
 outputs:
 	mkdir -p outputs
