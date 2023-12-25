@@ -1,7 +1,9 @@
 TARGET := pilang
 CXX := g++
 OPTIONS := -Wall -Wextra
-C_FLAGS := -c
+#JSONCPP_DIR = /usr/include/jsoncpp/json
+C_FLAGS := -c #-I$(JSONCPP_DIR)
+LD_FLAGS := -ljsoncpp
 
 SRC_DIR := .
 SRC_DIRS := $(wildcard $(SRC_DIR) */)
@@ -30,12 +32,12 @@ $(foreach object, $(OBJECTS), \
 
 $(TARGET): $(OBJECTS) main.o
 	@echo 'Building binary $@ from $^'
-	$(CXX) $(OPTIONS) $^ -o $@
+	$(CXX) $(OPTIONS) $^ -o $@ $(LD_FLAGS)
 
 outputs:
 	mkdir -p outputs
 
 clean:
-	rm -f $(TARGET) outputs/*.o
+	rm -f $(TARGET) outputs/*.o main.o
 
 .PHONY: $(TARGET) clean
