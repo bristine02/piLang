@@ -5,6 +5,7 @@
 #include "../utils/utils.hpp"
 #include "../compiler/lib_instance.hpp"
 #include <iostream>
+#include <optional>
 
 using namespace std;
 
@@ -25,6 +26,10 @@ class LibSymbol
         } Property;
 
         vector<Property> properties;
+
+        //helpers
+        bool find_and_parse_location(string& str, size_t start, Location& out_loc, 
+                optional<size_t*> out_loc_start = nullopt, optional<size_t*> out_loc_end = nullopt);
         
 
     public:

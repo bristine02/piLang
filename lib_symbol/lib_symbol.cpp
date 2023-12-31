@@ -19,17 +19,14 @@ LibSymbol::LibSymbol(string& kicad_sym_str, LibInstance& lib_inst)
 
         // construct property location
         current_idx = found;
-        size_t prop_end = Utils::find_closing(kicad_sym_str, found, '(', ')');
-        size_t prop_at = kicad_sym_str.find("(at", current_idx);
-        size_t loc_end = Utils::find_closing(kicad_sym_str, prop_at, '(', ')');
-        string loc_str = kicad_sym_str.substr(prop_at + 1, loc_end - (prop_at + 1));
-        vector<string> loc = Utils::split_str(loc_str, ' ');
-
+        size_t prop_at;
+        size_t loc_end;
+        bool success = this->find_and_parse_location(kicad_sym_str, found, prop.location, &prop_at, &loc_end);
         //TODO: Better error reporting
-        if(loc.size() < 4) {cout<<"ERROR: Malformatted property location"<<endl; break;}
-        prop.location = Location(stof(loc.at(1)), stof(loc.at(2)), stof(loc.at(3)));
+        if(!success) {cout<<"ERROR: Malformatted property location"<<endl; break;}
 
         //Get "type", "value"
+        size_t prop_end = Utils::find_closing(kicad_sym_str, found, '(', ')');
         string prop_header_str = kicad_sym_str.substr(found, prop_at - found-1);
         vector<string> prop_header = Utils::split_str_maintain_str_literals(prop_header_str, ' ');
         //TODO: Better error reporting
@@ -44,6 +41,8 @@ LibSymbol::LibSymbol(string& kicad_sym_str, LibInstance& lib_inst)
         if(prop_end == found || prop_end + 1 >= kicad_sym_str.length()) break;
         current_idx = prop_end + 1;
 
+        this->properties.push_back(prop);
+
         cout<<"--------------------------Property--------------" <<endl;
         cout<< "Type: " << prop.type << " Value: " <<prop.value 
             << " At: x="<<prop.location.x << " y= " <<prop.location.x << " Rot= " <<prop.location.rot
@@ -51,12 +50,32 @@ LibSymbol::LibSymbol(string& kicad_sym_str, LibInstance& lib_inst)
 
     }
     
+    // Location not yet decided so initializing to the center
+    this->location = Location(0, 0, 0);
 
 
-    this->location = Location(1,1, 10);
 }
 
 LibSymbol::~LibSymbol(){}
+
+bool LibSymbol::find_and_parse_location(string& str, size_t start, Location& out_loc, 
+                optional<size_t*> out_loc_start, optional<size_t*> out_loc_end)
+{
+    size_t loc_start = str.find("(at", start);
+    size_t loc_end = Utils::find_closing(str, loc_start, '(', ')');
+    string loc_str = str.substr(loc_start + 1, loc_end - (loc_start + 1));
+    vector<string> loc = Utils::split_str(loc_str, ' ');
+    if(loc.size() < 4) {return false;}
+
+    out_loc.x = stof(loc.at(1));
+    out_loc.y = stof(loc.at(2)); 
+    out_loc.rot = stof(loc.at(3));
+
+    if(out_loc_start.has_value()) *(out_loc_start.value()) = loc_start;
+    if(out_loc_end.has_value()) *(out_loc_end.value()) = loc_end;
+
+    return true;
+}
 
 
 // void LibSymbol::setLibStr(string str)
