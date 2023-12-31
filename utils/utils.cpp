@@ -1,7 +1,7 @@
 #include "utils.hpp"
 
 
-vector<string> split_str(string &str, char delim)
+vector<string> Utils::split_str(string &str, char delim)
 {
     vector<string> result;
     stringstream str_stream(str);
@@ -12,7 +12,7 @@ vector<string> split_str(string &str, char delim)
 }
 
 
-vector<string> split_str(string &str, string delim)
+vector<string> Utils::split_str(string &str, string delim)
 {
     size_t startPos = 0;
     size_t endPos = 0;
@@ -30,7 +30,7 @@ vector<string> split_str(string &str, string delim)
 }
 
 
-void remove_intances_of_char(string &str, char c)
+void Utils::remove_intances_of_char(string &str, char c)
 {
     string::iterator endPos = remove(str.begin(), str.end(), c);
     str.erase(endPos, str.end());
@@ -42,7 +42,7 @@ void remove_intances_of_char(string &str, char c)
  *          returns 9
  * NOTE: returns opening_idx for wrongly formatted string
 */
-size_t find_closing(string& str, size_t opening_idx, char opening_delim, char closing_delim)
+size_t Utils::find_closing(string& str, size_t opening_idx, char opening_delim, char closing_delim)
 {
     size_t opened = 1;
     size_t current_idx = opening_idx + 1;
