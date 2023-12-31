@@ -43,17 +43,56 @@ LibSymbol::LibSymbol(string& kicad_sym_str, LibInstance& lib_inst)
 
         this->properties.push_back(prop);
 
+        /*
         cout<<"--------------------------Property--------------" <<endl;
         cout<< "Type: " << prop.type << " Value: " <<prop.value 
             << " At: x="<<prop.location.x << " y= " <<prop.location.x << " Rot= " <<prop.location.rot
             << "\n\t Effects" << prop.effects << endl;
-
+        */
     }
     
     // Location not yet decided so initializing to the center
     this->location = Location(0, 0, 0);
 
+    // find and construct pins
+    while ((found = kicad_sym_str.find("(pin", current_idx)) != string::npos)
+    {
+        current_idx = found;
+        Pin pin;
+        bool success = this->find_and_parse_location(kicad_sym_str, found, pin.rel_location);
+        //TODO: Better error reporting
+        if(!success) {cout<<"ERROR: Malformatted pin location"<<endl; break;}
 
+        size_t pin_num_start = kicad_sym_str.find("(number", current_idx);
+        if(pin_num_start == string::npos){cout<<"ERROR: Malformatted pin number"<<endl; break;}
+        pin_num_start += 9; // add length of '(number "' Sample format: (number "21" (effects ....
+        size_t pin_num_end = kicad_sym_str.find("\"", pin_num_start);
+        if(pin_num_end == string::npos){cout<<"ERROR: Malformatted pin number"<<endl; break;}
+        
+        pin.pin_num = stoi(kicad_sym_str.substr(pin_num_start, pin_num_end - pin_num_start));
+
+        for(auto pin_con:this->lib_instance.pin_connections)
+        {
+            if(pin_con.pin_num == pin.pin_num){
+                pin.wire_name = pin_con.wire_name;
+                pin.isConnected = true;
+                break;
+            }
+        }
+
+        size_t pin_name_start = kicad_sym_str.find("(name", current_idx);
+        if(pin_name_start == string::npos){cout<<"ERROR: Malformatted pin name"<<endl; break;}
+        pin_name_start += 7; // add length of '(name "' Sample format: (name "mypin" (effects ....
+        size_t pin_name_end = kicad_sym_str.find("\"", pin_name_start);
+        if(pin_name_end == string::npos){cout<<"ERROR: Malformatted pin name"<<endl; break;}
+        pin.pin_name = kicad_sym_str.substr(pin_name_start, pin_name_end - pin_name_start);
+
+        cout<< "----------------Pin----------------"<<endl;
+        cout<< "name: " << pin.pin_name << " Num: " << pin.pin_num 
+            << " wire name: " << (!pin.wire_name.empty()? pin.wire_name : "NOT CONNECTED") << endl;
+   
+        current_idx = pin_num_end;
+    }
 }
 
 LibSymbol::~LibSymbol(){}
