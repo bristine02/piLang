@@ -15,7 +15,7 @@ LibField::LibField(string field_str)
 
 void LibField::parse(string field_str)
 {
-    vector<string> fragments = split_str(field_str, ' ');
+    vector<string> fragments = Utils::split_str(field_str, ' ');
 
     // Fields (Fn) can be 9 fragments long or 10 fragments long if the "name" is included
     if (fragments.size() != 9 && fragments.size() != 10) // Malformed field
@@ -26,7 +26,7 @@ void LibField::parse(string field_str)
 
     try{
         this->field_type  = fragments.at(0);
-        remove_intances_of_char(fragments.at(1), '\"');
+        Utils::remove_intances_of_char(fragments.at(1), '\"');
         this->text        = fragments.at(1);
         this->pos_x       = stoi(fragments.at(2));
         this->pos_y       = stoi(fragments.at(3));

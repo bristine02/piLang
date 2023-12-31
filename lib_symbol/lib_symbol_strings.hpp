@@ -2,7 +2,7 @@
 #include <string>
 using namespace std;
 
-const string LIB_R = R""""(
+string LIB_R = R""""(
 (symbol "Device:R" (pin_numbers hide) (pin_names (offset 0)) (in_bom yes) (on_board yes)
       (property "Reference" "R" (at 2.032 0 90)
         (effects (font (size 1.27 1.27)))

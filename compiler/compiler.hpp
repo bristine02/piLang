@@ -12,7 +12,8 @@ class Compiler
 private:
     optional<Lexer> lexer;
     LibParser lib_parser;
-    optional<KicadIO> kicad_io;
+    vector<LibInstance> lib_instances;
+    KicadIO kicad_io;
 
 
 public:
