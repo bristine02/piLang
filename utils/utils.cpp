@@ -11,6 +11,32 @@ vector<string> Utils::split_str(string &str, char delim)
     return result;
 }
 
+vector<string> Utils::split_str_maintain_str_literals(string &str, char delim)
+{
+    size_t startPos = 0;
+    size_t endPos = 0;
+    string subStr;
+    vector<string> result;
+
+    while ((endPos = str.find(delim, endPos +1)) != string::npos)
+    {
+        if(str.at(startPos) == '"' && str.at(endPos - 1) != '"')
+        {
+            // Ignore splits in between " "
+        }else
+        {
+            subStr = str.substr(startPos, endPos-startPos);
+            result.push_back(subStr);
+            startPos = endPos+1;
+        }
+    }
+    // Get last substring (ignored by the while loop)
+    subStr = str.substr(startPos, str.length()-startPos);
+    result.push_back(subStr);
+
+    return result; 
+}
+
 
 vector<string> Utils::split_str(string &str, string delim)
 {
@@ -21,12 +47,14 @@ vector<string> Utils::split_str(string &str, string delim)
 
     while ((endPos = str.find(delim, startPos)) != string::npos)
     {
-        subStr = str.substr(startPos, endPos);
+        subStr = str.substr(startPos, endPos-startPos);
         result.push_back(subStr);
-        startPos = endPos;
+        startPos = endPos+1;
     }
-
-    return result; 
+    // Get last substring (ignored by the while loop)
+    subStr = str.substr(startPos, str.length()-startPos);
+    result.push_back(subStr);
+    return result;
 }
 
 
