@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 #include <string>
+#include "./utils/utils.hpp"
 
 using namespace std;
 
@@ -15,14 +16,6 @@ int main(int argc, char** argv)
         cout<< "ERROR: No file provided" <<endl;
         return 1;
     }
-
-    // LibSymbol libSymR;
-    // libSymR.setLibStr(LIB_R);
-    // LibSymbol libSym3V3;
-    // libSymR.setLibStr(LIB_3V3);
-    // LibSymbol libSymGND;
-    // libSymR.setLibStr(LIB_GND);
-
 
     string filename = argv[1];
     ifstream file;
@@ -39,6 +32,14 @@ int main(int argc, char** argv)
 
     Compiler compiler;
     compiler.compile(buffer.str());
-    
+
+    string test_str = R"""(property "Reference" "R" (at 2.032 0 90)
+      (effects (font (size 1.27 1.27)))
+    )""";
+
+    size_t end = Utils::find_closing(test_str, 47, '(', ')');
+
+    //cout<< test_str.substr(47, 47+ end+1)<<endl;
+
     return 0;
 }

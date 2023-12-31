@@ -1,6 +1,6 @@
 #include "compiler.hpp"
 
-Compiler::Compiler()
+Compiler::Compiler() : kicad_io(".", ".")
 {
 }
 
@@ -21,10 +21,9 @@ void Compiler::compile(const string& program)
 
             optional<LibInstance> lib_inst = this->lib_parser.parse_lib_instance(token_group, this->lexer.value().tokens);
             if (!lib_inst.has_value()) cout<< "ERROR: couldn't parse lib instance" << endl;
-
             else
             {
-                
+                lib_instances.push_back(lib_inst.value());
             }
 
             {
@@ -38,4 +37,6 @@ void Compiler::compile(const string& program)
         }
         
     }
+
+    this->kicad_io.create_symbol(lib_instances.back());
 }
