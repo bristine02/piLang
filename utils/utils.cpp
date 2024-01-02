@@ -89,3 +89,26 @@ size_t Utils::find_closing(string& str, size_t opening_idx, char opening_delim, 
     else return opening_idx;
 }
 
+
+string Utils::generate_pseudo_uuid_from_str(const string& str)
+{
+    return "UNIMPLEMENTED";
+}
+
+
+bool Utils::is_delimeter(char c)
+{
+    string delims = ";.,()";
+    size_t pos = delims.find(c);
+    return pos != string::npos;
+}
+
+bool Utils::is_valid_name_char(char c)
+{
+    return  isalnum(c) || c == '_' || c == ':' || c=='+' || c=='-';
+}
+
+bool Utils::is_valid_name_start(char c)
+{
+    return isalpha(c) || c == '_';
+}

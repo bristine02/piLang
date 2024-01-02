@@ -1,16 +1,7 @@
 #include "lexer.hpp"
 #include <iostream>
+#include "../utils/utils.hpp"
 
-
-bool is_valid_name_start(char c)
-{
-    return isalpha(c) || c == '_';
-}
-
-bool is_valid_name_char(char c)
-{
-    return isalnum(c) || c == '_';
-}
 
 string token_type_name(TokenType token_type)
 {
@@ -49,14 +40,6 @@ string token_type_name(TokenType token_type)
     }
 }
 
-bool is_delimeter(char c)
-{
-    string delims = ";.,()";
-    size_t pos = delims.find(c);
-    return pos != string::npos;
-}
-
-
 Lexer::Lexer(const string& content)
 {
     
@@ -88,7 +71,7 @@ int Lexer::lex_next(Token* token)
     token->value_ptr = &(this->content[this->cursor]);
     token->value_len = 0;
 
-    if (is_delimeter(this->content[this->cursor]))
+    if (Utils::is_delimeter(this->content[this->cursor]))
     {
         token->value_len = 1;
         switch (this->content[this->cursor])
@@ -123,14 +106,15 @@ int Lexer::lex_next(Token* token)
         return LEXER_STATE_NO_ERROR;
     }
 
-    else if (is_valid_name_start(this->content[this->cursor]))
+    else if (Utils::is_valid_name_start(this->content[this->cursor]))
     {
         token->token_type = TOKEN_TYPE_NAME;
-        while (is_valid_name_char(this->content[this->cursor]) && (this->cursor < this->content_len))
+        while (Utils::is_valid_name_char(this->content[this->cursor]) && (this->cursor < this->content_len))
         {
             this->cursor++;
             token->value_len++;
         }
+        cout<<token->get_value()<<endl;
         return LEXER_STATE_NO_ERROR;
     }
     else { cout<< "Unrecognized token: " << this->content[this->cursor] << endl; }
