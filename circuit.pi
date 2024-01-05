@@ -5,8 +5,8 @@ wire w2;
 
 Device:R R1(.pin1(w1), .pin2(w2));
 
-Power:+3V3 vin(.pin1(w1));
+power:+3V3 vin(.pin1(w1));
 
-Power:GND gnd(.pin1(w2));
+power:GND gnd(.pin1(w2));
 
 endmodule

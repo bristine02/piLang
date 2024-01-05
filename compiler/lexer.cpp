@@ -114,7 +114,6 @@ int Lexer::lex_next(Token* token)
             this->cursor++;
             token->value_len++;
         }
-        cout<<token->get_value()<<endl;
         return LEXER_STATE_NO_ERROR;
     }
     else { cout<< "Unrecognized token: " << this->content[this->cursor] << endl; }

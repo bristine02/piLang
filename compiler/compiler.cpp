@@ -1,6 +1,6 @@
 #include "compiler.hpp"
 
-Compiler::Compiler() : kicad_io(".", ".")
+Compiler::Compiler() : kicad_io("../../Program Files/KiCad/7.0/share/kicad/symbols/", ".")
 {
 }
 
@@ -38,5 +38,7 @@ void Compiler::compile(const string& program)
         
     }
 
-    this->kicad_io.create_symbol(lib_instances.back());
+    for(auto inst:this->lib_instances){
+        this->kicad_io.create_symbol(inst);
+    }
 }

@@ -70,7 +70,7 @@ void Utils::remove_intances_of_char(string &str, char c)
  *          returns 9
  * NOTE: returns opening_idx for wrongly formatted string
 */
-size_t Utils::find_closing(string& str, size_t opening_idx, char opening_delim, char closing_delim)
+size_t Utils::find_closing(const string& str, size_t opening_idx, char opening_delim, char closing_delim)
 {
     size_t opened = 1;
     size_t current_idx = opening_idx + 1;

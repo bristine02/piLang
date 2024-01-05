@@ -28,13 +28,15 @@ class LibSymbol
         vector<Property> properties;
 
         //helpers
-        bool find_and_parse_location(string& str, size_t start, Location& out_loc, 
+        static bool find_and_parse_location(string& str, size_t start, Location& out_loc, 
                 optional<size_t*> out_loc_start = nullopt, optional<size_t*> out_loc_end = nullopt);
         
 
     public:
-        LibSymbol(string& kicad_sym_str, LibInstance& lib_inst);
+        LibSymbol();
+        // LibSymbol(string& kicad_sym_str, LibInstance& lib_inst);
         ~LibSymbol();
+        static bool create(string& kicad_sym_str, LibInstance& lib_inst, LibSymbol& lib_sym_out);
         // string getLibStr();
         // void setLibStr(string lib_Str);
 
