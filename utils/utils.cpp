@@ -20,9 +20,9 @@ vector<string> Utils::split_str_maintain_str_literals(string &str, char delim)
 
     while ((endPos = str.find(delim, endPos +1)) != string::npos)
     {
-        if(str.at(startPos) == '"' && str.at(endPos - 1) != '"')
+        if(str.at(startPos) == '"' && (str.at(endPos - 1) != '"' || str.at(endPos - 2) == '\\'))
         {
-            // Ignore splits in between " "
+            // Ignore splits in between " " including escape strings (\")
         }else
         {
             subStr = str.substr(startPos, endPos-startPos);
