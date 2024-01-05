@@ -12,10 +12,11 @@ class Pin
         //float pin_length;
         string pin_name;
         string wire_name;
-        unsigned int pin_num;
+        uint16_t pin_num;
+        bool isConnected = false;
 
     public:
-        Pin();
+        Pin(){};
         ~Pin(){};
 
 };

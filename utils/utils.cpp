@@ -20,9 +20,9 @@ vector<string> Utils::split_str_maintain_str_literals(string &str, char delim)
 
     while ((endPos = str.find(delim, endPos +1)) != string::npos)
     {
-        if(str.at(startPos) == '"' && str.at(endPos - 1) != '"')
+        if(str.at(startPos) == '"' && (str.at(endPos - 1) != '"' || str.at(endPos - 2) == '\\'))
         {
-            // Ignore splits in between " "
+            // Ignore splits in between " " including escape strings (\")
         }else
         {
             subStr = str.substr(startPos, endPos-startPos);
@@ -70,7 +70,7 @@ void Utils::remove_intances_of_char(string &str, char c)
  *          returns 9
  * NOTE: returns opening_idx for wrongly formatted string
 */
-size_t Utils::find_closing(string& str, size_t opening_idx, char opening_delim, char closing_delim)
+size_t Utils::find_closing(const string& str, size_t opening_idx, char opening_delim, char closing_delim)
 {
     size_t opened = 1;
     size_t current_idx = opening_idx + 1;
@@ -89,3 +89,26 @@ size_t Utils::find_closing(string& str, size_t opening_idx, char opening_delim, 
     else return opening_idx;
 }
 
+
+string Utils::generate_pseudo_uuid_from_str(const string& str)
+{
+    return "UNIMPLEMENTED";
+}
+
+
+bool Utils::is_delimeter(char c)
+{
+    string delims = ";.,()";
+    size_t pos = delims.find(c);
+    return pos != string::npos;
+}
+
+bool Utils::is_valid_name_char(char c)
+{
+    return  isalnum(c) || c == '_' || c == ':' || c=='+' || c=='-';
+}
+
+bool Utils::is_valid_name_start(char c)
+{
+    return isalpha(c) || c == '_';
+}
