@@ -3,7 +3,7 @@ CXX := g++
 OPTIONS := -Wall -Wextra
 #JSONCPP_DIR = /usr/include/jsoncpp/json
 C_FLAGS := -c #-I$(JSONCPP_DIR)
-LD_FLAGS := -ljsoncpp
+LD_FLAGS :=# -ljsoncpp
 
 SRC_DIR := .
 SRC_DIRS := $(wildcard $(SRC_DIR) */)
