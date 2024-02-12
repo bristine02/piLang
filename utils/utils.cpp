@@ -96,8 +96,8 @@ string Utils::generate_pseudo_uuid_from_str(const string& str)
     char chars[16] = {0};
     size_t num_chars = 14;
 
-    for (int i = 0; i < n; i++) {
-        int idx;
+    for (size_t i = 0; i < n; i++) {
+        size_t idx;
         idx = i % num_chars;
         chars[idx] = str[i] + chars[idx];
     }
