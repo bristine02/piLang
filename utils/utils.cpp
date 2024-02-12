@@ -92,7 +92,29 @@ size_t Utils::find_closing(const string& str, size_t opening_idx, char opening_d
 
 string Utils::generate_pseudo_uuid_from_str(const string& str)
 {
-    return "UNIMPLEMENTED";
+    size_t n = str.length();
+    char chars[16] = {0};
+    size_t num_chars = 14;
+
+    for (size_t i = 0; i < n; i++) {
+        size_t idx;
+        idx = i % num_chars;
+        chars[idx] = str[i] + chars[idx];
+    }
+
+    stringstream stream;
+
+    for (size_t i = 0; i < 16; i++) {
+        short h1 = (chars[i] >> 4) & 0xF;
+        short h2 = chars[i] & 0xF;
+        stream << hex << h1;
+        stream << hex << h2;
+        if (i == 3 || i == 5 || i == 7 || i == 9) stream << '-';
+    }
+
+    string result(stream.str());
+
+    return result;
 }
 
 
